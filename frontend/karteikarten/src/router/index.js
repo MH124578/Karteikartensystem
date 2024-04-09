@@ -1,28 +1,28 @@
-import Vue from 'vue';
-import Router from 'vue-router';
-import Login from '@/views/Login.vue';
-import Register from '@/views/Register.vue';
-import Dashboard from '@/views/Dashboard.vue';
+import { createRouter, createWebHistory } from 'vue-router';
+import RegistrationForm from '@/components/RegistrationForm.vue';
+import FlashcardCreationForm from '@/components/FlashcardCreationForm.vue';
+import CategoryCreationForm from '@/components/CategoryCreationForm.vue';
 
-Vue.use(Router);
+const routes = [
+  {
+    path: '/register',
+    name: 'Register',
+    component: RegistrationForm,
+  },
+  {
+    path: '/create-flashcard',
+    name: 'CreateFlashcard',
+    component: FlashcardCreationForm,
+  },
+  {
+    path: '/create-category',
+    name: 'CreateCategory',
+    component: CategoryCreationForm,
+  },
+  // Weitere Routen hier hinzufügen
+];
 
-export default new Router({
-  mode: 'history',
-  routes: [
-    {
-      path: '/',
-      name: 'dashboard',
-      component: Dashboard,
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: Login,
-    },
-    {
-      path: '/register',
-      name: 'register',
-      component: Register,
-    },
-  ],
+export const router = createRouter({
+  history: createWebHistory(),
+  routes,
 });
