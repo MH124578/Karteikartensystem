@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional, List
 
 class UserBase(BaseModel):
@@ -18,7 +18,8 @@ class User(BaseModel):
 class FlashcardBase(BaseModel):
     question: str
     answer: str
-    category_id: int
+    category_id: Optional[int] = Field(default=None, description="The ID of the category this flashcard belongs to.")
+    owner_id: int
 
 class FlashcardCreate(FlashcardBase):
     category_id: int
@@ -33,6 +34,7 @@ class Flashcard(FlashcardBase):
 
 class CategoryBase(BaseModel):
     name: str
+    user_id: int
 
 class CategoryCreate(CategoryBase):
     pass
@@ -43,3 +45,7 @@ class Category(CategoryBase):
 
     class Config:
         from_attributes = True
+
+class Login(BaseModel):
+    email: str
+    password: str

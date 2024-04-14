@@ -1,15 +1,15 @@
 from sqlalchemy.orm import Session
 
 from . import models, schemas
-from .security import get_password_hash
+#from .security import get_password_hash
 
 
 def get_user_by_email(db: Session, email: str):
     return db.query(models.User).filter(models.User.email == email).first()
 
 def create_user(db: Session, user: schemas.UserCreate):
-    hashed_password = get_password_hash(user.password)
-    db_user = models.User(email=user.email, username=user.username, hashed_password=hashed_password)
+    #hashed_password = get_password_hash(user.password)
+    db_user = models.User(email=user.email, username=user.username, hashed_password=user.password)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -20,7 +20,7 @@ def create_user_flashcard(db: Session, flashcard: schemas.FlashcardCreate, user_
         question=flashcard.question,
         answer=flashcard.answer,
         owner_id=user_id,
-        category_id=category_id  # Verwendung von category_id
+        category_id=category_id
     )
     db.add(db_flashcard)
     db.commit()
@@ -37,6 +37,9 @@ def create_category(db: Session, category: schemas.CategoryCreate, user_id: int)
 
 def get_categories(db: Session, user_id: int):
     return db.query(models.Category).filter(models.Category.user_id == user_id).all()
+
+def get_flashcards_by_category(db: Session, category_id: int):
+    return db.query(models.Flashcard).filter(models.Flashcard.category_id == category_id).all()
 
 def delete_category(db: Session, category_id: int):
     db_category = db.query(models.Category).filter(models.Category.id == category_id).first()

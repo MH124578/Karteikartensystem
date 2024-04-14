@@ -10,10 +10,10 @@
   </div>
 </template>
 
-import axios from 'axios';
 
 
 <script>
+import axios from 'axios';
 export default {
   data() {
     return {
@@ -25,7 +25,7 @@ export default {
   methods: {
     async register() {
       try {
-        const response = await this.axios.post('/users/', {
+        const response = await axios.post('http://127.0.0.1:8000/create_users/', {
           username: this.username,
           email: this.email,
           password: this.password,
