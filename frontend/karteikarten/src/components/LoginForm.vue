@@ -6,14 +6,13 @@
         <input v-model="password" type="password" placeholder="Passwort" required />
         <button type="submit">Anmelden</button>
       </form>
-      <router-link to="/register">Registrieren</router-link> |
-      <router-view/>
+      <router-link to="/register" class="registration-link">Noch keinen Account? Hier Registrieren</router-link>
     </div>
+    <router-view/>
   </template>
   
   <script>
   import axios from 'axios';
-  import router from '../router';
   
   export default {
     data() {
@@ -30,11 +29,10 @@
             email: this.email,
             password: this.password,
             });
-            console.log('Login successful:', response.data); // Stellen Sie sicher, dass diese Zeile die `user_id` anzeigt
-            // Speichern der user_id im LocalStorage
+            console.log('Login successful:', response.data);
             localStorage.setItem('user_id', response.data.user_id);
             this.$emit('login-success');
-            router.push('/dashboard');
+            this.$router.push('/dashboard');
         } catch (error) {
             if (error.response && error.response.data && error.response.data.detail) {
             console.error('Fehler beim Anmelden:', error.response.data.detail);
@@ -42,7 +40,7 @@
             console.error('Fehler beim Anmelden:', error);
             }
         }
-        }
+        },
     }
   };
   </script>

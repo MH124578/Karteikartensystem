@@ -6,6 +6,7 @@
         <router-link to="/dashboard">Dashboard</router-link> |
         <router-link to="/create-flashcard">Karteikarte erstellen</router-link> |
         <router-link to="/create-category">Kategorie erstellen</router-link>
+        <button @click="logout">Ausloggen</button>
       </nav>
       <router-view/>
     </div>
@@ -25,6 +26,19 @@ export default {
     return {
       isAuthenticated: false
     };
+  },
+  created() {
+    this.checkAuthStatus();
+  },
+  methods: {
+    checkAuthStatus() {
+      this.isAuthenticated = !!localStorage.getItem('user_id');
+    },
+    logout() {
+      localStorage.removeItem('user_id');
+      this.isAuthenticated = false;
+      this.$router.push('/');
+    }
   }
 };
 </script>

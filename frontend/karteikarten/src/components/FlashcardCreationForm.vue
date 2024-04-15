@@ -56,7 +56,6 @@ export default {
       this.question = '';
       this.answer = '';
       this.category_id = '';
-      this.categories = [];
     }
   },
   mounted() {

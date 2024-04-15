@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import LoginForm from '@/components/LoginForm.vue';
-import RegistrationForm from '@/components/RegistrationForm.vue';
-import FlashcardCreationForm from '@/components/FlashcardCreationForm.vue';
-import CategoryCreationForm from '@/components/CategoryCreationForm.vue';
-import DashboardForm from '@/components/DashboardForm.vue';
+import LoginForm from '../components/LoginForm.vue';
+import RegistrationForm from '../components/RegistrationForm.vue';
+import FlashcardCreationForm from '../components/FlashcardCreationForm.vue';
+import CategoryCreationForm from '../components/CategoryCreationForm.vue';
+import DashboardForm from '../components/DashboardForm.vue';
 
 const routes = [
   {
@@ -13,11 +13,8 @@ const routes = [
   },
   {
     path: '/register',
-    name: 'Register',
+    name: 'register',
     component: RegistrationForm,
-    meta: {
-      requiresAuth: false
-    }
   },
   {
     path: '/create-flashcard',
@@ -34,10 +31,11 @@ const routes = [
     name: 'Dashboard',
     component: DashboardForm
   },
-  // Weitere Routen hier hinzufügen
 ];
 
 export const router = createRouter({
   history: createWebHistory(),
   routes,
 });
+
+export default router;

@@ -55,6 +55,8 @@ export default {
   },
   mounted() {
     this.loadCategories();
+    this.loadCategories();
+    this.restoreColumnsState();
   },
   methods: {
     async loadCategories() {
@@ -68,27 +70,41 @@ export default {
     },
     async loadFlashcards() {
       if (!this.selectedCategoryId) return;
+      
+      // Versuche, den Zustand aus localStorage zu laden
+      const columnsData = localStorage.getItem(`columnsData-${this.selectedCategoryId}`);
+      if (columnsData) {
+        const columns = JSON.parse(columnsData);
+        this.columns = columns.map(column => ({
+          title: column.title,
+          cards: column.cards
+        }));
+      } else {
+        this.columns.forEach(column => column.cards = []); // Reset cards in all columns initially
+      }
+
       try {
         const response = await axios.get(`http://127.0.0.1:8000/flashcards?category_id=${this.selectedCategoryId}`);
-        if (response.data.length === 0) {
-          this.noFlashcardsMessage = 'Es gibt noch keine Flashcards in dieser Kategorie.';
-          this.columns.forEach(column => column.cards = []);
-        } else {
-          this.noFlashcardsMessage = '';
-          this.columns[0].cards = response.data;
+        if (response.data.length > 0) {
+          const newCards = response.data.filter(card => 
+            !this.columns.some(column => 
+              column.cards.some(storedCard => storedCard.id === card.id)
+            )
+          );
+
+          if (newCards.length > 0) {
+            this.columns[0].cards.push(...newCards); // Add new cards to the first column
+            this.saveColumnsState(); // Update local storage with new state
+          }
         }
       } catch (error) {
-        if (error.response && error.response.status === 404) {
-          this.noFlashcardsMessage = 'Es gibt noch keine Flashcards in dieser Kategorie.';
-          this.columns.forEach(column => column.cards = []);
-        } else {
-          console.error('Ein unbekannter Fehler ist aufgetreten:', error);
-        }
+        console.error('Ein unbekannter Fehler ist aufgetreten:', error);
       }
     },
     updateSelectedCategory(categoryId) {
       this.selectedCategoryId = categoryId;
       this.loadFlashcards();
+      this.restoreColumnsState();
     },
     selectCard(card) {
       this.selectedCard = card;
@@ -99,12 +115,39 @@ export default {
       this.showModal = false;
       this.selectedCard = null;
     },
+    saveColumnsState() {
+      if (!this.selectedCategoryId) return;
+      const columnData = this.columns.map(column => ({
+        title: column.title,
+        cards: column.cards.map(card => ({ 
+          id: card.id, 
+          question: card.question, 
+          answer: card.answer 
+        }))
+      }));
+      localStorage.setItem(`columnsData-${this.selectedCategoryId}`, JSON.stringify(columnData));
+    },
+    restoreColumnsState() {
+      if (!this.selectedCategoryId) return;
+      const columnsData = localStorage.getItem(`columnsData-${this.selectedCategoryId}`);
+      if (columnsData) {
+        const columns = JSON.parse(columnsData);
+        this.columns = columns.map(column => ({
+          title: column.title,
+          cards: column.cards
+        }));
+      } else {
+        this.columns = this.columns.map(column => ({ ...column, cards: [] })); // Reset cards in each column
+      }
+    },
     moveCard(columnIndex, cardIndex, direction) {
       const toColumnIndex = columnIndex + direction;
       if (toColumnIndex < 0 || toColumnIndex >= this.columns.length) return;
       const card = this.columns[columnIndex].cards.splice(cardIndex, 1)[0];
       this.columns[toColumnIndex].cards.push(card);
-    }
+      this.saveColumnsState();
+    },
+    
   }
 };
 </script>
@@ -115,6 +158,7 @@ export default {
   justify-content: space-between;
   padding: 20px;
   background: white;
+  position: relative;
 }
 
 .column {
@@ -157,6 +201,21 @@ export default {
   max-width: 500px;
   width: 90%;
   text-align: center;
+}
+.logout-button {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  padding: 10px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  background-color: #d32f2f;
 }
 </style>
 
