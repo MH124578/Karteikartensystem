@@ -2,7 +2,7 @@
   <div>
     <h2>Kategorie erstellen</h2>
     <form @submit.prevent="submitCategory">
-      <input v-model="name" placeholder="Kategoriename" />
+      <input type="text" v-model="name" placeholder="Kategoriename" />
       <button type="submit">Erstellen</button>
     </form>
   </div>
@@ -15,33 +15,33 @@ export default {
   data() {
     return {
       name: '',
-      user_id: '',  // Initialwert, wird im mounted Lifecycle Hook gesetzt
+      user_id: ''
     };
   },
   mounted() {
-    this.user_id = localStorage.getItem('user_id');  // Lade user_id beim Start der Komponente
+    this.user_id = localStorage.getItem('user_id');
     if (!this.user_id) {
       console.error("Keine Benutzer-ID gefunden. Bitte stellen Sie sicher, dass der Benutzer angemeldet ist.");
-      // Optional können Sie den Benutzer zurück zur Anmeldeseite leiten oder eine Warnmeldung anzeigen.
+      // Optional: Weiterleitung zur Anmeldeseite oder Anzeige einer Warnung.
     }
   },
   methods: {
     async submitCategory() {
       if (!this.user_id) {
         console.error("Aktion nicht möglich. Keine Benutzer-ID verfügbar.");
-        return; // Beende die Funktion frühzeitig, wenn keine user_id vorhanden ist
+        return;
       }
       try {
         const response = await axios.post(`http://127.0.0.1:8000/users/${this.user_id}/categories`, {
           name: this.name,
-          user_id: parseInt(this.user_id)  // Stelle sicher, dass dies eine Zahl ist
+          user_id: parseInt(this.user_id)
         });
         
         console.log("Kategorie erstellt:", response.data);
-        // Erfolgslogik hier
+        // Implementiere hier die Erfolgslogik, z.B. Benachrichtigung oder Weiterleitung
       } catch (error) {
         console.error("Fehler beim Erstellen der Kategorie:", error);
-        // Fehlerbehandlung hier
+        // Fehlerbehandlung, z.B. Anzeige einer Fehlermeldung
       }
     }
   }
@@ -59,11 +59,12 @@ form {
 }
 
 input[type="text"] {
-  width: 100%;
+  width: calc(100% - 2px);
   padding: 10px;
   margin: 10px 0;
   border: 1px solid #ccc;
   border-radius: 4px;
+  box-sizing: border-box;
 }
 
 button {

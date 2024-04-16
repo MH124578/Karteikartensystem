@@ -41,11 +41,11 @@ export default {
       selectedCategoryId: null,
       categories: [],
       columns: [
-        { title: 'Spalte 1', cards: [] },
-        { title: 'Spalte 2', cards: [] },
-        { title: 'Spalte 3', cards: [] },
-        { title: 'Spalte 4', cards: [] },
-        { title: 'Spalte 5', cards: [] }
+        { title: '1', cards: [] },
+        { title: '2', cards: [] },
+        { title: '3', cards: [] },
+        { title: '4', cards: [] },
+        { title: '5', cards: [] }
       ],
       noFlashcardsMessage: '',
       showModal: false,
@@ -109,7 +109,7 @@ export default {
     selectCard(card) {
       this.selectedCard = card;
       this.showModal = true;
-      this.showAnswer = false; // Verstecke die Antwort beim Öffnen des Modals
+      this.showAnswer = false;
     },
     closeModal() {
       this.showModal = false;
@@ -137,7 +137,7 @@ export default {
           cards: column.cards
         }));
       } else {
-        this.columns = this.columns.map(column => ({ ...column, cards: [] })); // Reset cards in each column
+        this.columns = this.columns.map(column => ({ ...column, cards: [] }));
       }
     },
     moveCard(columnIndex, cardIndex, direction) {
@@ -155,31 +155,40 @@ export default {
 <style scoped>
 .dashboard {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
   padding: 20px;
-  background: white;
-  position: relative;
+  background: #f2f3f5;
 }
 
-.column {
-  width: 18%;
+.category-select {
+  margin: 10px 0;
   padding: 10px;
-  border: 1px solid #ccc;
+  width: 50%;
+  background: white;
   border-radius: 4px;
 }
 
-.card {
+.column {
+  margin: 10px;
   padding: 10px;
+  background: #ecf0f1;
+  border-radius: 4px;
+  width: 100%;
+  max-width: 200px;
+}
+
+.card {
   margin: 5px;
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
+  padding: 10px;
+  background: #bdc3c7;
+  border-radius: 4px;
   cursor: pointer;
 }
 
 .card-actions {
   display: flex;
   justify-content: space-between;
-  padding-top: 10px;
 }
 
 .modal {
@@ -188,34 +197,17 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .modal-content {
-  background-color: white;
   padding: 20px;
+  background: white;
   border-radius: 5px;
-  max-width: 500px;
-  width: 90%;
-  text-align: center;
-}
-.logout-button {
-  position: absolute;
-  right: 20px;
-  top: 20px;
-  padding: 10px;
-  background-color: #f44336;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.logout-button:hover {
-  background-color: #d32f2f;
+  width: 300px;
 }
 </style>
 

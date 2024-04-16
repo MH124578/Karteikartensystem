@@ -2,8 +2,8 @@
   <div>
     <h2>Karteikarte erstellen</h2>
     <form @submit.prevent="submitFlashcard">
-      <input v-model="question" placeholder="Frage" required />
-      <input v-model="answer" placeholder="Antwort" required />
+      <input type="text" v-model="question" placeholder="Frage" required />
+      <input type="text" v-model="answer" placeholder="Antwort" required />
       <select v-model="category_id" required>
         <option disabled value="">Bitte wähle eine Kategorie</option>
         <option v-for="category in categories" :key="category.id" :value="category.id">
@@ -28,9 +28,13 @@ export default {
       categories: []
     };
   },
+  mounted() {
+    this.user_id = localStorage.getItem('user_id');
+    this.loadCategories();
+  },
   methods: {
     async loadCategories() {
-      if (!this.user_id) return; // Frühzeitiges Beenden, wenn keine user_id vorhanden ist
+      if (!this.user_id) return; // Keine Aktion, wenn keine Benutzer-ID vorhanden ist
       try {
         const response = await axios.get(`http://127.0.0.1:8000/users/${this.user_id}/categories`);
         this.categories = response.data;
@@ -39,12 +43,16 @@ export default {
       }
     },
     async submitFlashcard() {
+      if (!this.user_id) {
+        console.error('Aktion nicht möglich. Keine Benutzer-ID verfügbar.');
+        return;
+      }
       try {
         const response = await axios.post(`http://127.0.0.1:8000/users/${this.user_id}/flashcards`, {
           question: this.question,
           answer: this.answer,
           category_id: parseInt(this.category_id),
-          owner_id: parseInt(this.user_id) // Verwende user_id als owner_id
+          owner_id: parseInt(this.user_id)
         });
         console.log('Karteikarte erstellt:', response.data);
         this.resetForm();
@@ -57,10 +65,6 @@ export default {
       this.answer = '';
       this.category_id = '';
     }
-  },
-  mounted() {
-    this.user_id = localStorage.getItem('user_id'); // Abrufen der user_id aus dem LocalStorage
-    this.loadCategories();
   }
 };
 </script>
@@ -76,11 +80,12 @@ form {
 }
 
 input[type="text"], select {
-  width: 100%;
+  width: calc(100% - 2px);
   padding: 10px;
   margin: 10px 0;
   border: 1px solid #ccc;
   border-radius: 4px;
+  box-sizing: border-box;
 }
 
 button {
